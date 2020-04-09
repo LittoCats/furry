@@ -1,32 +1,30 @@
 //
-//  vedis.cpp
+//  fs.cpp
 //  Furry
 //
 //  Created by 程巍巍 on 2020/4/9.
 //  Copyright © 2020 Beijing Tuiwen Information Technology Company. All rights reserved.
 //
 
-#include "vedis.h"
+#include "fs.h"
 
-Vedis::Vedis()
+FileManager::FileManager()
 {
   
 }
 
-Vedis::~Vedis()
+FileManager::~FileManager()
 {
-  printf("~Vedis\n");
+  printf("~FileManager\n");
 }
 
-auto Vedis::getConstants() -> std::map<std::string, folly::dynamic> {
+auto FileManager::getConstants() -> std::map<std::string, folly::dynamic> {
   return {
-      {"one", 1},
-      {"two", 2},
-      {"animal", "fox"},
+      {"name", "FileManager"},
   };
 }
 
-auto Vedis::getMethods() -> std::vector<Method> {
+auto FileManager::getMethods() -> std::vector<Method> {
   return {
     Method("hello", [this](folly::dynamic args, Callback callback) { callback({"Hello Vedis!"}); }),
   };

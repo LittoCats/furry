@@ -10,6 +10,9 @@
 		05110F9B243E2B0500D025B9 /* Furry.mm in Sources */ = {isa = PBXBuildFile; fileRef = 05110F9A243E2B0500D025B9 /* Furry.mm */; };
 		05110F9C243E2B0500D025B9 /* Furry.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 05110F99243E2B0500D025B9 /* Furry.h */; };
 		052CEE40243E2F7000022ADC /* vedis.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 052CEE3E243E2F7000022ADC /* vedis.cpp */; };
+		052CEE48243EA31800022ADC /* sqlite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 052CEE46243EA31800022ADC /* sqlite.cpp */; };
+		052CEE51243EB60A00022ADC /* analytics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 052CEE4F243EB60A00022ADC /* analytics.cpp */; };
+		052CEE54243EB63800022ADC /* fs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 052CEE52243EB63800022ADC /* fs.cpp */; };
 		69FF59662ED78ECF8E5670B3 /* libPods-Furry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 31DC95793BFD49EB2D78AEE4 /* libPods-Furry.a */; };
 /* End PBXBuildFile section */
 
@@ -31,7 +34,15 @@
 		05110F99243E2B0500D025B9 /* Furry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Furry.h; sourceTree = "<group>"; };
 		05110F9A243E2B0500D025B9 /* Furry.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Furry.mm; sourceTree = "<group>"; };
 		052CEE3E243E2F7000022ADC /* vedis.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = vedis.cpp; sourceTree = "<group>"; };
-		052CEE3F243E2F7000022ADC /* vedis.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = vedis.hpp; sourceTree = "<group>"; };
+		052CEE3F243E2F7000022ADC /* vedis.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vedis.h; sourceTree = "<group>"; };
+		052CEE44243E957000022ADC /* furry-internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "furry-internal.h"; sourceTree = "<group>"; };
+		052CEE45243EA26900022ADC /* modules.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = modules.h; sourceTree = "<group>"; };
+		052CEE46243EA31800022ADC /* sqlite.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = sqlite.cpp; sourceTree = "<group>"; };
+		052CEE47243EA31800022ADC /* sqlite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sqlite.h; sourceTree = "<group>"; };
+		052CEE4F243EB60A00022ADC /* analytics.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = analytics.cpp; sourceTree = "<group>"; };
+		052CEE50243EB60A00022ADC /* analytics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = analytics.h; sourceTree = "<group>"; };
+		052CEE52243EB63800022ADC /* fs.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = fs.cpp; sourceTree = "<group>"; };
+		052CEE53243EB63800022ADC /* fs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fs.h; sourceTree = "<group>"; };
 		31DC95793BFD49EB2D78AEE4 /* libPods-Furry.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Furry.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		47E952A83636DD505367B884 /* Pods-Furry.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Furry.release.xcconfig"; path = "Target Support Files/Pods-Furry/Pods-Furry.release.xcconfig"; sourceTree = "<group>"; };
 		B52B3DCD125993399A8F5C87 /* Pods-Furry.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Furry.debug.xcconfig"; path = "Target Support Files/Pods-Furry/Pods-Furry.debug.xcconfig"; sourceTree = "<group>"; };
@@ -72,8 +83,16 @@
 			children = (
 				05110F99243E2B0500D025B9 /* Furry.h */,
 				05110F9A243E2B0500D025B9 /* Furry.mm */,
+				052CEE44243E957000022ADC /* furry-internal.h */,
+				052CEE45243EA26900022ADC /* modules.h */,
 				052CEE3E243E2F7000022ADC /* vedis.cpp */,
-				052CEE3F243E2F7000022ADC /* vedis.hpp */,
+				052CEE3F243E2F7000022ADC /* vedis.h */,
+				052CEE46243EA31800022ADC /* sqlite.cpp */,
+				052CEE47243EA31800022ADC /* sqlite.h */,
+				052CEE4F243EB60A00022ADC /* analytics.cpp */,
+				052CEE50243EB60A00022ADC /* analytics.h */,
+				052CEE52243EB63800022ADC /* fs.cpp */,
+				052CEE53243EB63800022ADC /* fs.h */,
 			);
 			path = Furry;
 			sourceTree = "<group>";
@@ -178,7 +197,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				052CEE54243EB63800022ADC /* fs.cpp in Sources */,
 				05110F9B243E2B0500D025B9 /* Furry.mm in Sources */,
+				052CEE48243EA31800022ADC /* sqlite.cpp in Sources */,
+				052CEE51243EB60A00022ADC /* analytics.cpp in Sources */,
 				052CEE40243E2F7000022ADC /* vedis.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

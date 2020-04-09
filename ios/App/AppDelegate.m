@@ -26,7 +26,18 @@ static void InitializeFlipper(UIApplication *application) {
 
 #import "../Furry/Furry.h"
 
+static NSMutableArray<Class>* extraModuleClasses;
+
 @implementation AppDelegate
+
++ (void)load
+{
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    extraModuleClasses = [NSMutableArray new];
+  });
+  [extraModuleClasses addObject:self];
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {

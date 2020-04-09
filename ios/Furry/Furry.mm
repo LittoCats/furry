@@ -20,13 +20,36 @@ class CxxModule;
 }
 }
 
+static NSMutableArray<Class>* extraModuleClasses;
+
+extern "C" {
+
+NSArray<id<RCTBridgeModule>>* furryModulesWithBridge(RCTBridge* bridge)
+{
+  NSLog(@"load furry modules %@", bridge);
+  NSMutableArray* modules = [NSMutableArray new];
+  for (Class Module in extraModuleClasses) {
+    [modules addObject:[[Module alloc] init]];
+  }
+  return [NSArray arrayWithArray:modules];
+}
+
+}
+
 #define FURRY_MODULE(NAME)                                                  \
 @interface Furry ## NAME : RCTCxxModule                                     \
 @end                                                                        \
 @implementation Furry ## NAME                                               \
++ (void)load                                                                \
+{                                                                           \
+  if (extraModuleClasses == nil) {                                          \
+    extraModuleClasses = [NSMutableArray new];                              \
+  }                                                                         \
+  [extraModuleClasses addObject:self];                                      \
+}                                                                           \
 + (NSString *)moduleName                                                    \
 {                                                                           \
-return @"" # NAME;                                                          \
+  return @"" # NAME;                                                        \
 }                                                                           \
 - (std::unique_ptr<facebook::xplat::module::CxxModule>)createModule         \
 {                                                                           \
@@ -35,15 +58,4 @@ return @"" # NAME;                                                          \
 @end
 
 
-#import "vedis.hpp"
-
-FURRY_MODULE(Vedis)
-
-extern "C" {
-NSArray<id<RCTBridgeModule>>* furryModulesWithBridge(RCTBridge* bridge)
-{
-  return @[
-    [[FurryVedis alloc] init]
-  ];
-}
-}
+#import "modules.h"

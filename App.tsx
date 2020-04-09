@@ -31,7 +31,8 @@ declare var global: {HermesInternal: null | {}};
 
 const App = () => {
   useEffect(()=> {
-    console.info(NativeModules)
+    console.log(NativeModules)
+    NativeModules.Vedis.hello((h: string)=> console.info(h))
   }, []);
   return (
     <>
