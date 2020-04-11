@@ -18,6 +18,10 @@ Vedis::~Vedis()
   printf("~Vedis\n");
 }
 
+static std::string hello() {
+  return "Hello vedis !";
+}
+
 auto Vedis::getConstants() -> std::map<std::string, folly::dynamic> {
   return {
       {"one", 1},
@@ -28,6 +32,11 @@ auto Vedis::getConstants() -> std::map<std::string, folly::dynamic> {
 
 auto Vedis::getMethods() -> std::vector<Method> {
   return {
-    Method("hello", [this](folly::dynamic args, Callback callback) { callback({"Hello Vedis!"}); }),
+     Method("hello", [this] {
+       return hello();
+      }, SyncTag),
+    Method("open", [this] (folly::dynamic args, Callback cb) {
+      cb({"Hello"});
+    })
   };
 }

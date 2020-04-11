@@ -31,8 +31,13 @@ declare var global: {HermesInternal: null | {}};
 
 const App = () => {
   useEffect(()=> {
-    console.log(NativeModules)
-    NativeModules.Vedis.hello((h: string)=> console.info(h))
+    const Vedis = NativeModules.Vedis;
+    setTimeout(() => {
+      console.log(Vedis.hello())
+      console.log(Vedis.open)
+      console.log(Vedis.open.type)
+      Vedis.open(':mem:', (h: string)=> console.log(h))
+    }, 3300)
   }, []);
   return (
     <>

@@ -1,0 +1,206 @@
+plugins {
+    id("com.android.library")
+    id("maven")
+    id("de.undercouch.download")
+}
+
+
+import de.undercouch.gradle.tasks.download.Download
+import org.apache.tools.ant.filters.ReplaceTokens
+
+Properties ReactProperties = new Properties()
+InputStream rpfileInputStream = new FileInputStream("${projectDir}/../../node_modules/" +
+        "react-native/ReactAndroid/gradle.properties")
+ReactProperties.load(rpfileInputStream)
+rpfileInputStream.close()
+
+def downloadsDir = new File("$buildDir/downloads")
+def dependenciesPath = new File("$buildDir/vendor")
+def boostPath = dependenciesPath.getAbsolutePath()
+def doubleConversionPath = boostPath
+def follyPath = boostPath
+def glogPath = boostPath
+
+
+task createNativeDepsDirectories {
+    downloadsDir.mkdirs()
+    dependenciesPath.mkdir()
+}
+
+def BOOST_VERSION = ReactProperties.get("BOOST_VERSION")
+
+task downloadBoost(dependsOn: createNativeDepsDirectories, type: Download) {
+    src("https://github.com/react-native-community/boost-for-react-native/releases/download/" +
+            "v${BOOST_VERSION.replace("_", ".")}-0/boost_${BOOST_VERSION}.tar.gz")
+    onlyIfNewer(true)
+    overwrite(false)
+    dest(new File(downloadsDir, "boost_${BOOST_VERSION}.tar.gz"))
+}
+
+task prepareBoost(dependsOn: [downloadBoost], type: Copy) {
+    from(tarTree(resources.gzip(downloadBoost.dest)))
+    include("boost_${BOOST_VERSION}/boost/**/*.hpp", "boost/boost/**/*.hpp")
+    includeEmptyDirs = false
+    into boostPath
+    doLast {
+        file("${boostPath}/boost_${BOOST_VERSION}").renameTo(file("${boostPath}/boost"))
+    }
+}
+
+def DOUBLE_CONVERSION_VERSION = ReactProperties.get("DOUBLE_CONVERSION_VERSION")
+
+task downloadDoubleConversion(dependsOn: createNativeDepsDirectories, type: Download) {
+    src("https://github.com/google/double-conversion/archive/v${DOUBLE_CONVERSION_VERSION}.tar.gz")
+    onlyIfNewer(true)
+    overwrite(false)
+    dest(new File(downloadsDir, "double-conversion-${DOUBLE_CONVERSION_VERSION}.tar.gz"))
+}
+
+task prepareDoubleConversion(dependsOn: [downloadDoubleConversion], type: Copy) {
+    from(tarTree(resources.gzip(downloadDoubleConversion.dest)))
+    include("double-conversion-${DOUBLE_CONVERSION_VERSION}/src/**/*")
+    filesMatching("*/src/**/*", { fname -> fname.path = "double-conversion/${fname.name}" })
+    includeEmptyDirs = false
+    into("${doubleConversionPath}/double-conversion")
+}
+
+def FOLLY_VERSION = ReactProperties.get("FOLLY_VERSION")
+
+task downloadFolly(dependsOn: createNativeDepsDirectories, type: Download) {
+    src("https://github.com/facebook/folly/archive/v${FOLLY_VERSION}.tar.gz")
+    onlyIfNewer(true)
+    overwrite(false)
+    dest(new File(downloadsDir, "folly-${FOLLY_VERSION}.tar.gz"))
+}
+
+task prepareFolly(dependsOn: [downloadFolly], type: Copy) {
+    from(tarTree(downloadFolly.dest))
+    include("folly-${FOLLY_VERSION}/folly/**/*")
+    eachFile { fname -> fname.path = (fname.path - "folly-${FOLLY_VERSION}/") }
+    includeEmptyDirs = false
+    into("${follyPath}/folly")
+}
+
+def GLOG_VERSION = ReactProperties.get("GLOG_VERSION")
+
+task downloadGlog(dependsOn: createNativeDepsDirectories, type: Download) {
+    src("https://github.com/google/glog/archive/v${GLOG_VERSION}.tar.gz")
+    onlyIfNewer(true)
+    overwrite(false)
+    dest(new File(downloadsDir, "glog-${GLOG_VERSION}.tar.gz"))
+}
+
+// Prepare glog sources to be compiled, this task will perform steps that normally should've been
+// executed by automake. This way we can avoid dependencies on make/automake
+task prepareGlog(dependsOn:  [downloadGlog], type: Copy) {
+    from(tarTree(downloadGlog.dest))
+    include("glog-${GLOG_VERSION}/src/**/*", "config.h")
+    includeEmptyDirs = false
+    filesMatching("**/*.h.in") {
+        filter(ReplaceTokens, tokens: [
+                ac_cv_have_unistd_h           : "1",
+                ac_cv_have_stdint_h           : "1",
+                ac_cv_have_systypes_h         : "1",
+                ac_cv_have_inttypes_h         : "1",
+                ac_cv_have_libgflags          : "0",
+                ac_google_start_namespace     : "namespace google {",
+                ac_cv_have_uint16_t           : "1",
+                ac_cv_have_u_int16_t          : "1",
+                ac_cv_have___uint16           : "0",
+                ac_google_end_namespace       : "}",
+                ac_cv_have___builtin_expect   : "1",
+                ac_google_namespace           : "google",
+                ac_cv___attribute___noinline  : "__attribute__ ((noinline))",
+                ac_cv___attribute___noreturn  : "__attribute__ ((noreturn))",
+                ac_cv___attribute___printf_4_5: "__attribute__((__format__ (__printf__, 4, 5)))"
+        ])
+        it.path = (it.name - ".in")
+    }
+    into("$glogPath/glog")
+
+    doLast {
+        copy {
+            from(fileTree(dir: "$glogPath/glog", includes:
+                    ["stl_logging.h", "logging.h", "raw_logging.h", "vlog_is_on.h",
+                     "**/src/glog/log_severity.h"]).files)
+            includeEmptyDirs = false
+            new File("$glogPath/glog/glog").mkdirs()
+            into("$glogPath/glog/glog")
+        }
+    }
+}
+
+task prepareRNLibrary(type: Copy){
+    def aarFile = file("$projectDir/../../node_modules/react-native/android/com/facebook/react/" +
+            "react-native/${ReactProperties.get('VERSION_NAME')}/" +
+            "react-native-${ReactProperties.get('VERSION_NAME')}.aar")
+    def output = file("$buildDir/react-native")
+    output.mkdirs()
+
+    from(zipTree(aarFile))
+    into(output.getAbsolutePath())
+}
+
+
+task prepareDependencies {
+    dependsOn(createNativeDepsDirectories)
+
+    dependsOn(prepareBoost)
+
+    dependsOn(prepareDoubleConversion)
+
+    dependsOn(prepareFolly)
+
+    dependsOn(prepareGlog)
+
+    dependsOn(prepareRNLibrary)
+}
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+
+        externalNativeBuild {
+            cmake {
+                cppFlags "-I${boostPath}/boost -I${doubleConversionPath}/double-conversion " +
+                        "-I${follyPath}/folly -I${glogPath}/glog "
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            version "3.6.0"
+            path "../../common/CMakeLists.txt"
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+
+    implementation "com.facebook.react:react-native:+"  // From node_modules
+}
