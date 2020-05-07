@@ -1,0 +1,22 @@
+{
+  "name": "furry",
+  "version": "1.0.0",
+  "description": "react native application common utils",
+  "main": ".eslintrc.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LittoCats/furry.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LittoCats/furry/issues"
+  },
+  "homepage": "https://github.com/LittoCats/furry#readme",
+  "dependencies": {
+    "react-native": "0.61"
+  }
+}
