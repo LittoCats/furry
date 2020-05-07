@@ -38,8 +38,3 @@ auto KeyChain::getMethods() -> std::vector<Method> {
     })
   };
 }
-
-extern "C" facebook::xplat::module::CxxModule* create_furry_KeyChain()
-{
-	return new KeyChain();
-}

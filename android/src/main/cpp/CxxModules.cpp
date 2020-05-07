@@ -14,4 +14,4 @@ extern "C" facebook::xplat::module::CxxModule* create_furry_##NAME()            
     return new NAME();                                                          \
 }
 
-#import "CxxModules.h"
+#import "../../../../common/CxxModules.h"
