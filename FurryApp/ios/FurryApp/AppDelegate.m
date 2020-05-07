@@ -23,6 +23,8 @@ static void InitializeFlipper(UIApplication *application) {
 }
 #endif
 
+extern NSArray<id<RCTBridgeModule>>* furryModulesWithBridge(RCTBridge* bridge);
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -55,4 +57,8 @@ static void InitializeFlipper(UIApplication *application) {
 #endif
 }
 
+- (NSArray<id<RCTBridgeModule>> *)extraModulesForBridge:(RCTBridge *)bridge
+{
+  return furryModulesWithBridge(bridge);
+}
 @end

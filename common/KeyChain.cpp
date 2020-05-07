@@ -4,9 +4,7 @@
  * @created     : 星期四 5月 07, 2020 10:00:25 CST
  */
 
-const char* KEYCHAIN_VERSION = "20200507";
-
-#include <cxxreact/CxxModule.h>
+#include "Furry.h"
 
 class KeyChain: public facebook::xplat::module::CxxModule
 {

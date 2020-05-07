@@ -2,12 +2,14 @@ cmake_minimum_required(VERSION 3.6)
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../build/ReactAndroid/jni/${ANDROID_ABI})
 
-set(REACT_NATIVE "${CMAKE_CURRENT_SOURCE_DIR}/../../../../node_modules/react-native/")
+set(REACT_NATIVE "${CMAKE_CURRENT_SOURCE_DIR}/../../../../node_modules/react-native")
+set(FURRY_COMMON "${CMAKE_CURRENT_SOURCE_DIR}/../../../../common")
 
 set(
 	SOURCE
   
-  KeyChain.cpp
+  	"CxxModules.cpp"
+  	"${FURRY_COMMON}/KeyChain.cpp"
 )
 
 add_library(furry SHARED ${SOURCE})
