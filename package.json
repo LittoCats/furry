@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/LittoCats/furry#readme",
   "dependencies": {
-    "react-native": "0.61"
+    "react-native": "0.62"
   }
 }
